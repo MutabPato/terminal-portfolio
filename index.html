@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patrick · Backend Developer Portfolio</title>
+  <meta name="description" content="Mutabazi Patrick — Backend Engineer. Django/DRF, Node.js/Express, PostgreSQL, Redis, Docker, Clean Architecture. Interactive terminal portfolio.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --bg: #0b0d12;
+      --panel: #121521;
+      --panel-2: #171b2b;
+      --border: #2a3352;
+      --text: #c8d1ff;
+      --muted: #9aa4d2;
+      --accent: #3ecf8e;
+      --accent-2: #7aa2f7;
+      --warn: #facc15;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Fira Code', monospace;
+      background: radial-gradient(1200px 600px at 50% -200px, #11162a 0%, var(--bg) 60%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .terminal {
+      background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+      border: 1px solid var(--border);
+    }
+    .prompt { color: var(--accent-2); }
+    .command { color: #e2e8ff; }
+    .output  { color: var(--muted); }
+    .cursor {
+      display: inline-block;
+      width: 10px; height: 1.2em;
+      background-color: #e2e8ff;
+      margin-left: 4px;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+    #input {
+      background: transparent; border: none; outline: none;
+      width: 100%; color: #e2e8ff;
+    }
+    a { color: var(--accent); }
+    a:hover { text-decoration: underline; }
+    .badge { border: 1px solid #2d364f; padding: 2px 8px; border-radius: 999px; display: inline-block; margin: 2px 6px 2px 0; font-size: 12px; color:#b9c2ff;}
+    .kbd { padding: 2px 6px; border: 1px solid #2d364f; border-radius: 6px; background:#0f1220; color:#b9c2ff; font-size: 12px;}
+  </style>
+</head>
+<body class="p-4 md:p-8">
+  <div class="max-w-4xl mx-auto">
+    <header class="mb-4 md:mb-6">
+      <h1 class="text-xl md:text-2xl font-semibold text-white">I'm <span class="text-[var(--accent)]">Mutabazi Patrick</span></h1>
+      <p class="text-sm text-[var(--muted)]">A Backend Engineer</p>
+    </header>
+
+    <div id="terminal" class="terminal rounded-lg shadow-lg w-full h-[75vh] overflow-y-auto p-4" onclick="document.getElementById('input').focus();">
+      <div id="output"></div>
+      <div class="flex items-center pt-2">
+        <span class="prompt">patrick@portfolio:~$</span>
+        <input type="text" id="input" class="ml-2" autofocus autocomplete="off" spellcheck="false" aria-label="Terminal input">
+        <span class="cursor"></span>
+      </div>
+    </div>
+
+    <footer class="mt-4 text-[12px] text-[var(--muted)]">
+      © <span id="year"></span> Mutabazi Patrick · <a href="https://mutabazipatrick.com" target="_blank" rel="noreferrer">mutabazipatrick.com</a>
+    </footer>
+  </div>
+
+  <script>
+    // Data — personalize here
+    const P = {
+      name: "Mutabazi Patrick",
+      title: "Backend Engineer",
+      location: "Nairobi, Kenya",
+      email: "patrickmtbz@gmail.com",
+      github: "https://github.com/MutabPato",
+      linkedin: "https://www.linkedin.com/in/mutabazipatrick/",
+      x: "https://x.com/mutab_pato",
+      site: "https://mutabazipatrick.com",
+      resume: "#", // add link when ready
+      skills: {
+        languages: ["Python", "JavaScript", "SQL", "Bash"],
+        backend: ["Django / DRF", "Node.js / Express", "GraphQL (graphene-django)", "JWT / OAuth", "REST & WebSockets"],
+        data: ["PostgreSQL", "MongoDB", "Redis"],
+        systems: ["Docker", "Kubernetes (basics)", "NGINX", "CI/CD", "Linux"],
+        patterns: ["DDD"],
+        testing: ["Pytest", "Django TestCase", "Jest", "Postman/Newman"]
+      },
+      projects: [
+        {
+          key: "movie-rec",
+          name: "Movie Recommendation Backend",
+          about: "Personalized movie recommendations with TMDB integration, Redis caching, and JWT auth.",
+          tech: ["Django", "DRF", "PostgreSQL", "Redis", "JWT", "Swagger"],
+          links: {
+            repo: "https://github.com/MutabaziPatrick/movie_recommendation_backend",
+            live: "https://movie-recommendation-backend-iiml.onrender.com"
+          },
+          bullets: [
+            "Custom recommender logic based on user favorites",
+            "Layered caching (per‑view + function‑level)",
+            "Comprehensive tests with DRF APITestCase"
+          ]
+        },
+        {
+          key: "caching-listings",
+          name: "Property Listings — Caching Demo",
+          about: "Demonstrates Django low‑level cache API and invalidation for hot listing view.",
+          tech: ["Django", "PostgreSQL", "Redis", "Docker"],
+          links: { repo: "https://github.com/MutabPato/alx-backend-caching_property_listings" },
+          bullets: ["Fine‑grained keys + versioning", "Stampede prevention with locks", "Dockerized local stack"]
+        },
+        {
+          key: "graphql-crm",
+          name: "GraphQL CRM (Django + Graphene)",
+          about: "GraphQL schema, queries & mutations with secure resolver patterns.",
+          tech: ["Django", "GraphQL", "graphene-django", "SQLite"],
+          links: { repo: "https://github.com/MutabPato/alx-backend-graphql_crm" },
+          bullets: ["Schema & resolvers", "Pagination & filtering", "Auth in resolvers; avoid N+1"]
+        },
+        {
+          key: "files-manager",
+          name: "Files Manager API",
+          about: "Upload/list/view files with token auth and background processing.",
+          tech: ["Node.js", "Express", "MongoDB", "Redis"],
+          links: { repo: "https://github.com/MutabPato/alx-files_manager" },
+          bullets: ["Token auth + permissions", "Thumbnails & pagination", "Background jobs with queue"]
+        },
+        {
+          key: "dhaabu",
+          name: "Dhaabu — Forum for Africans (Backend/FE)",
+          about: "Community forum stack; backend + React frontend in repo.",
+          tech: ["Node.js", "Express", "MongoDB", "React", "Tailwind"],
+          links: { repo: "https://github.com/MutabPato/dhaabu" },
+          bullets: ["Modular backend & React frontend", "Profiles, threads, votes", "Rate limiting & logging"]
+        },
+        {
+          key: "save-and-fill",
+          name: "Save & Fill — Chrome Extension",
+          about: "Save text snippets and auto‑fill later.",
+          tech: ["JavaScript", "Chrome APIs"],
+          links: { repo: "https://github.com/MutabPato/save_and_fill" },
+          bullets: ["Content script + options UI", "Practical automation"]
+        }
+      ]
+    };
+
+    // Terminal elements
+    const input = document.getElementById('input');
+    const output = document.getElementById('output');
+    const terminal = document.getElementById('terminal');
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    let commandHistory = [];
+    let historyIndex = -1;
+
+    // Helpers
+    const nl = (n=1) => "<br>".repeat(n);
+    const badge = (t) => `<span class="badge">${t}</span>`;
+    const list = (items) => `<ul class="list-disc ml-5">${items.map(i => `<li>${i}</li>`).join("")}</ul>`;
+    const projectLine = (p) => `<li><span class="font-bold text-[var(--warn)]">${p.key}</span> — ${p.name} <span class="text-[var(--muted)]">(${p.tech.slice(0,3).join(", ")}...)</span></li>`;
+    const link = (href, text) => `<a href="${href}" target="_blank" rel="noreferrer">${text}</a>`;
+
+    // Commands
+    const commands = {
+      help: `
+        <div class="output">
+          <span class="text-green-400">Available commands:</span>${nl()}
+          <span class="font-bold">about</span>        — Who I am${nl()}
+          <span class="font-bold">skills</span>       — My technical skills${nl()}
+          <span class="font-bold">projects</span>     — View my projects${nl()}
+          <span class="font-bold">project &lt;key&gt;</span> — Details of one project (e.g. <span class="kbd">project movie-rec</span>)${nl()}
+          <span class="font-bold">contact</span>      — How to reach me${nl()}
+          <span class="font-bold">resume</span>       — Download my resume${nl()}
+          <span class="font-bold">clear</span>        — Clear the terminal${nl()}
+          <span class="font-bold">history</span>      — Show command history
+        </div>
+      `,
+      about: `
+        <div class="output">
+          <p>Hi, I'm <span class="text-white font-semibold">${P.name}</span> — ${P.title} based in ${P.location}.</p>
+          <p>I design and ship production‑ready APIs with observability, caching, and pragmatic domain boundaries. I enjoy turning ambiguous requirements into reliable services.</p>
+          <p class="mt-2">I work with ${["Django/DRF","Node.js/Express","PostgreSQL","Redis","Docker"].map(badge).join(" ")}.</p>
+          <p class="mt-2">Site: ${link(P.site, P.site)} · GitHub: ${link(P.github,"@MutabPato")} · LinkedIn: ${link(P.linkedin,"/in/mutabazipatrick")} · X: ${link(P.x,"@mutab_pato")}</p>
+        </div>
+      `,
+      skills: `
+        <div class="output">
+          <h3 class="text-lg font-bold text-green-400">Languages</h3>
+          <p>${P.skills.languages.map(badge).join(" ")}</p>
+          <h3 class="text-lg font-bold text-green-400 mt-2">Backend</h3>
+          <p>${P.skills.backend.map(badge).join(" ")}</p>
+          <h3 class="text-lg font-bold text-green-400 mt-2">Databases & Caching</h3>
+          <p>${P.skills.data.map(badge).join(" ")}</p>
+          <h3 class="text-lg font-bold text-green-400 mt-2">Systems</h3>
+          <p>${P.skills.systems.map(badge).join(" ")}</p>
+          <h3 class="text-lg font-bold text-green-400 mt-2">Patterns</h3>
+          <p>${P.skills.patterns.map(badge).join(" ")}</p>
+          <h3 class="text-lg font-bold text-green-400 mt-2">Testing</h3>
+          <p>${P.skills.testing.map(badge).join(" ")}</p>
+        </div>
+      `,
+      projects: `
+        <div class="output">
+          <p>Type <span class="kbd">project &lt;key&gt;</span> for details.</p>
+          <ul>
+            ${P.projects.map(projectLine).join("")}
+          </ul>
+        </div>
+      `,
+      resume: `
+        <div class="output">
+          ${P.resume === "#" ? "<p>(Resume link coming soon)</p>" : `<p>Download: ${link(P.resume,"resume.pdf")}</p>`}
+        </div>
+      `,
+      contact: `
+        <div class="output">
+          <p>You can reach me via:</p>
+          <ul>
+            <li>Email: <a href="mailto:${P.email}">${P.email}</a></li>
+            <li>LinkedIn: ${link(P.linkedin, P.linkedin)}</li>
+            <li>GitHub: ${link(P.github, P.github)}</li>
+            <li>X (Twitter): ${link(P.x, P.x)}</li>
+          </ul>
+        </div>
+      `,
+      history: () => commandHistory.map((cmd, i) => `${i}: ${cmd}`).join("<br>")
+    };
+
+    // Dynamic project detail commands: "project <key>"
+    function projectDetails(key) {
+      const p = P.projects.find(x => x.key === key);
+      if (!p) return `<p>Project '${key}' not found. Type 'projects' to see the list.</p>`;
+      const links = [
+        p.links?.live ? link(p.links.live, "live") : null,
+        p.links?.docs ? link(p.links.docs, "docs") : null,
+        p.links?.repo ? link(p.links.repo, "repo") : null
+      ].filter(Boolean).join(" · ");
+      return `
+        <div class="output">
+          <h3 class="text-lg font-bold text-green-400">${p.name}</h3>
+          <p class="mt-1">${p.about}</p>
+          <p class="mt-1">${p.tech.map(badge).join(" ")}</p>
+          ${links ? `<p class="mt-1">${links}</p>` : ""}
+          ${p.bullets?.length ? list(p.bullets) : ""}
+        </div>
+      `;
+    }
+
+    // Welcome banner
+    const banner = `
+<p class="text-sm">Welcome to my interactive portfolio. Type <span class="kbd">help</span> to get started.</p>
+`;
+
+    function display(text) {
+      output.innerHTML += text;
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function displayWelcomeMessage() {
+      display(banner + "<br>");
+    }
+
+    function executeCommand(cmd) {
+      const commandOutput = `<div class="flex"><span class="prompt">patrick@portfolio:~$</span><span class="command ml-2">${cmd}</span></div>`;
+      display(commandOutput);
+
+      setTimeout(() => {
+        let result = "";
+        if (cmd.startsWith("project ")) {
+          const key = cmd.substring(8).trim();
+          result = projectDetails(key);
+        } else if (commands[cmd]) {
+          result = typeof commands[cmd] === "function" ? commands[cmd]() : commands[cmd];
+        } else if (cmd === "clear") {
+          output.innerHTML = "";
+          return;
+        } else {
+          result = `<p>Command not found: ${cmd}. Type 'help' for a list of commands.</p>`;
+        }
+        display(`<div class="output mt-1">${result}</div>`);
+      }, 150);
+    }
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const command = input.value.trim();
+        if (command) {
+          executeCommand(command);
+          if (command !== commandHistory[commandHistory.length - 1]) {
+            commandHistory.push(command);
+          }
+          historyIndex = commandHistory.length;
+        }
+        input.value = '';
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (historyIndex > 0) {
+          historyIndex--;
+          input.value = commandHistory[historyIndex] || "";
+        }
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (historyIndex < commandHistory.length - 1) {
+          historyIndex++;
+          input.value = commandHistory[historyIndex] || "";
+        } else if (historyIndex === commandHistory.length - 1) {
+          historyIndex++;
+          input.value = '';
+        }
+      } else if (e.key === 'Tab') {
+        e.preventDefault();
+        // basic autocomplete for base commands + project keys
+        const base = ['help','about','skills','projects','project','contact','resume','clear','history'];
+        const words = input.value.trim().split(/\s+/);
+        if (words.length === 1) {
+          const hit = base.find(c => c.startsWith(words[0] || ""));
+          if (hit) input.value = hit;
+        } else if (words[0] === 'project') {
+          const pref = (words[1] || "");
+          const keys = P.projects.map(p => p.key);
+          const hit = keys.find(k => k.startsWith(pref));
+          if (hit) input.value = `project ${hit}`;
+        }
+      }
+    });
+
+    window.onload = () => {
+      displayWelcomeMessage();
+      input.focus();
+    };
+  </script>
+</body>
+</html>
